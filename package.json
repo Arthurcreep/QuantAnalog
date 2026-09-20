@@ -1,0 +1,34 @@
+{
+  "name": "quantlog",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js",
+    "db:migrate": "sequelize-cli db:migrate",
+    "db:migrate:undo": "sequelize-cli db:migrate:undo",
+    "db:migrate:status": "sequelize-cli db:migrate:status",
+    "test": "echo \"Tests are not configured yet\"",
+    "test:dataset-repository": "node scripts/test-dataset-repository.js",
+    "test:dataset-service": "node scripts/test-dataset-service.js",
+    "test:raw-storage": "node scripts/test-raw-storage.js",
+    "test:import-raw": "node scripts/test-import-raw-dataset.js",
+    "test:candle-schema": "node scripts/test-candle-schema-validation.js",
+    "test:candle-timestamps": "node scripts/test-candle-timestamps.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "csv-parse": "^7.0.2",
+    "dotenv": "^18.0.1",
+    "express": "^5.2.1",
+    "pg": "^8.23.0",
+    "sequelize": "^6.37.8"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14",
+    "sequelize-cli": "^6.6.5"
+  }
+}
