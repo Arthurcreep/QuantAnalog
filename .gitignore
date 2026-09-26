@@ -6,3 +6,4 @@ coverage/
 
 storage/raw/
 storage/temp*/
+storage/prepared/
