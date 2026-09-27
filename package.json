@@ -9,7 +9,7 @@
     "db:migrate": "sequelize-cli db:migrate",
     "db:migrate:undo": "sequelize-cli db:migrate:undo",
     "db:migrate:status": "sequelize-cli db:migrate:status",
-    "test": "echo \"Tests are not configured yet\"",
+    "test": "node --test tests/*.test.js",
     "test:dataset-repository": "node scripts/test-dataset-repository.js",
     "test:dataset-service": "node scripts/test-dataset-service.js",
     "test:raw-storage": "node scripts/test-raw-storage.js",
@@ -62,7 +62,8 @@
     "research:btc-1h-hour-vol": "node scripts/run-bybit-btc-1h-hour-vol-research.js",
     "research:btc-1h-hour-vol-multihorizon": "node scripts/run-bybit-btc-1h-hour-vol-multihorizon.js",
     "research:btc-hour-vol-hac": "node scripts/run-bybit-btc-hour-vol-hac.js",
-    "research:btc-hour-vol-bootstrap": "node scripts/run-bybit-btc-hour-vol-bootstrap.js"
+    "research:btc-hour-vol-bootstrap": "node scripts/run-bybit-btc-hour-vol-bootstrap.js",
+    "test:regression": "node --test tests/*.test.js"
   },
   "keywords": [],
   "author": "",

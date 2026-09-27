@@ -1,3 +1,6 @@
+const { validateSeriesContinuity } = require("../series/validateSeriesContinuity");
+const { timeframeToMilliseconds } = require("../../datasets/calculations/timeframeToMilliseconds");
+
 const {
   findDatasetById,
 } = require(
@@ -53,7 +56,7 @@ const {
 );
 
 const RESEARCH_ENGINE_VERSION =
-  "research-v1";
+  "research-v1.1";
 
 const DEFAULT_QUANTILES = [
   0.01,
@@ -133,6 +136,8 @@ const runReturnResearch = async ({
 
       incompletePolicy,
     });
+
+  validateSeriesContinuity({ series: returns.series, expectedIntervalMs: timeframeToMilliseconds(dataset.sourceTimeframe) });
 
   const values =
     returns.series.map(
@@ -216,6 +221,7 @@ const runReturnResearch = async ({
         incompletePolicy,
         maxLag,
         quantiles,
+        gapPolicy: "REQUIRE_CONTIGUOUS",
       },
 
       metrics,

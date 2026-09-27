@@ -1,3 +1,5 @@
+const { validateSeriesContinuity } = require("../src/modules/research/series/validateSeriesContinuity");
+const { timeframeToMilliseconds } = require("../src/modules/datasets/calculations/timeframeToMilliseconds");
 const sequelize = require(
   "../src/config/database"
 );
@@ -85,6 +87,9 @@ const run = async () => {
           "DROP_INCOMPLETE",
       });
 
+    const expectedIntervalMs = timeframeToMilliseconds(dataset.sourceTimeframe);
+    validateSeriesContinuity({ series: returns.series, expectedIntervalMs });
+
     const values =
       returns.series.map(
         (item) =>
@@ -153,6 +158,7 @@ const run = async () => {
         series:
           returns.series,
 
+        expectedIntervalMs,
         windowSize: 24,
       });
 
@@ -161,6 +167,7 @@ const run = async () => {
         series:
           returns.series,
 
+        expectedIntervalMs,
         windowSize: 168,
       });
 
@@ -169,6 +176,7 @@ const run = async () => {
         series:
           returns.series,
 
+        expectedIntervalMs,
         windowSize: 720,
       });
 

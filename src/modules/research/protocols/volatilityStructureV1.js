@@ -1,6 +1,7 @@
 const VOLATILITY_STRUCTURE_V1 = {
   id: "VOLATILITY_STRUCTURE",
-  version: "1.0.0",
+  version: "1.1.0",
+  gapPolicy: "REQUIRE_CONTIGUOUS",
 
   targetPhenomenon:
     "CONDITIONAL_VOLATILITY",

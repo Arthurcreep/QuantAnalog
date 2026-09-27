@@ -1,3 +1,5 @@
+const { listForecastRuns } = require("./services/listForecastRuns.service");
+
 const {
   runForecast,
 } = require(
@@ -211,7 +213,12 @@ const getForecastResultController =
     });
   };
 
+const listForecastRunsController = async (req, res) => {
+  res.json({ status: "ok", data: await listForecastRuns() });
+};
+
 module.exports = {
+  listForecastRunsController,
   createForecast,
   getForecast,
   getForecastHistory,

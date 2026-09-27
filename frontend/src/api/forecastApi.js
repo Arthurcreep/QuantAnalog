@@ -29,6 +29,12 @@ const getForecastResult =
       .data;
   };
 
+const listForecastRuns = async ({ signal } = {}) => {
+  const response = await http.get("/forecasts", { signal });
+  return response.data.data.forecastRuns;
+};
+
 export {
+  listForecastRuns,
   getForecastResult,
 };

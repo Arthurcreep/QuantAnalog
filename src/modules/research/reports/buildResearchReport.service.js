@@ -30,7 +30,7 @@ const REPORT_ENGINE_VERSION =
   "research-report-v1.5";
 
 const EVIDENCE_ENGINE_VERSION =
-  "evidence-v1.2";
+  "evidence-v1.3";
 
 const hashObject = (
   value

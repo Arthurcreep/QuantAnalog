@@ -1,3 +1,5 @@
+const { validateRegisteredHorizons } = require("./validateRegisteredHorizons");
+
 const {
   buildEvidenceLevel,
 } = require(
@@ -18,9 +20,9 @@ const getRequiredSupportCount = ({
     rule ===
     "MAJORITY_OF_REGISTERED_HORIZONS"
   ) {
-    return Math.ceil(
+    return Math.floor(
       total / 2
-    );
+    ) + 1;
   }
 
   throw new Error(
@@ -34,29 +36,18 @@ const isSignificant = (
   typeof value ===
     "number" &&
   Number.isFinite(value) &&
+  value >= 0 &&
   value <=
     EVIDENCE_POLICY_V1
       .statistical
       .alpha;
 
-const confidenceIntervalExcludesZero =
+const confidenceIntervalSupportsPositiveContrast =
   ({
     lower,
     upper,
   }) => {
-    if (
-      typeof lower !==
-        "number" ||
-      typeof upper !==
-        "number"
-    ) {
-      return false;
-    }
-
-    return (
-      lower > 0 ||
-      upper < 0
-    );
+    return Number.isFinite(lower) && Number.isFinite(upper) && lower > 0 && upper >= lower;
   };
 
 const evaluateHorizon = (
@@ -171,14 +162,16 @@ const evaluateHorizon = (
     );
 
   const stableProfile =
-    typeof profileCorrelation ===
-      "number" &&
+    Number.isFinite(profileCorrelation) &&
+    profileCorrelation <= 1 &&
     profileCorrelation >=
       policy
         .minimumProfileCorrelation;
 
+  const directionStable = Number.isFinite(relativeDifference) && relativeDifference > 0;
+
   const bootstrapSupported =
-    confidenceIntervalExcludesZero({
+    directionStable && confidenceIntervalSupportsPositiveContrast({
       lower:
         confidenceInterval?.lower,
 
@@ -217,8 +210,10 @@ const evaluateHorizon = (
       : true;
 
   const oosSupported =
+    developmentGate &&
     multipleTestingGate &&
-    retrospectiveValidationGate;
+    retrospectiveValidationGate &&
+    directionStable;
 
   const robustSupported =
     oosSupported &&
@@ -285,6 +280,8 @@ const evaluateHorizon = (
 
     validationAdjusted,
 
+    directionStable,
+
     stableProfile,
 
     bootstrapSupported,
@@ -322,6 +319,9 @@ const evaluateCategoricalFactorEvidence =
           "CATEGORICAL_ANALYSIS_RUN_MISSING",
       };
     }
+
+    const horizonError = validateRegisteredHorizons(run);
+    if (horizonError) return { status: "EVIDENCE_EVALUATION_FAILED", reason: horizonError };
 
     const horizons =
       run

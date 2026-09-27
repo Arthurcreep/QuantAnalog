@@ -1,3 +1,5 @@
+const { validateRegisteredHorizons } = require("./validateRegisteredHorizons");
+
 const {
   buildEvidenceLevel,
 } = require(
@@ -18,9 +20,9 @@ const getRequiredSupportCount = ({
     rule ===
     "MAJORITY_OF_REGISTERED_HORIZONS"
   ) {
-    return Math.ceil(
+    return Math.floor(
       total / 2
-    );
+    ) + 1;
   }
 
   throw new Error(
@@ -355,6 +357,9 @@ const evaluateContinuousFactorEvidence =
           "CONTINUOUS_ANALYSIS_RUN_MISSING",
       };
     }
+
+    const horizonError = validateRegisteredHorizons(run);
+    if (horizonError) return { status: "EVIDENCE_EVALUATION_FAILED", reason: horizonError };
 
     const horizons =
       run

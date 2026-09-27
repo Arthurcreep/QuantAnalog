@@ -1,3 +1,5 @@
+const { validateSeriesContinuity } = require("../src/modules/research/series/validateSeriesContinuity");
+const { timeframeToMilliseconds } = require("../src/modules/datasets/calculations/timeframeToMilliseconds");
 const sequelize = require(
   "../src/config/database"
 );
@@ -61,6 +63,8 @@ const run = async () => {
         incompletePolicy:
           "DROP_INCOMPLETE",
       });
+
+    validateSeriesContinuity({ series: returnsResult.series, expectedIntervalMs: timeframeToMilliseconds(dataset.sourceTimeframe) });
 
     const returns =
       returnsResult.series.map(

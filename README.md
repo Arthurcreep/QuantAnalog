@@ -42,6 +42,28 @@ RAW-данные не изменяются.
 
 Любая очистка, восстановление, агрегация или другая трансформация создаёт новый dataset artifact с lineage.
 
+## Research integrity fixes (September 2026)
+
+- `npm test` runs the database-independent regression suite (HTTP/repository boundaries are mocked where needed).
+- Categorical and continuous evidence require the complete horizon set from the saved `AnalysisRun.config.protocol`; missing or duplicate results fail evaluation.
+- Strict majority means `floor(n / 2) + 1`. Categorical OOS requires the frozen high-minus-low contrast to retain a positive sign; level 5 additionally requires a finite positive bootstrap interval.
+- Evidence policy is now `1.2.0`, evidence engine `evidence-v1.3`. Existing report snapshots remain unchanged; generating a new snapshot uses the new version. Old runs lacking their saved horizon protocol cannot be upgraded silently.
+- Return and volatility diagnostics require a contiguous series. They fail with `NON_CONTIGUOUS_DIAGNOSTIC_SERIES` before writing results when a gap is found. Use an explicitly prepared contiguous interval; do not fill unknown prices just to pass this check.
+- Rolling realized volatility now requires `expectedIntervalMs` and only emits complete windows within contiguous segments.
+- The home page lists the latest 50 persisted forecast runs through `GET /api/v1/forecasts`, with separate empty and error states; no local run UUIDs are embedded.
+
+Verification:
+
+```bash
+npm test
+node scripts/test-research-planner.js
+node scripts/test-continuous-evidence.js
+npm --prefix frontend run build
+npm --prefix frontend run lint
+```
+
+These checks do not replace an end-to-end run against your PostgreSQL database and historical datasets. Recompute affected diagnostics and generate new report snapshots before relying on revised evidence levels.
+
 ## Current Status
 
 Текущий этап разработки:

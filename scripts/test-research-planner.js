@@ -89,7 +89,7 @@ const run = () => {
 
   assert.strictEqual(
     weekend.planStatus,
-    "NOT_IMPLEMENTED"
+    "RUNNABLE"
   );
 
   assert.strictEqual(
@@ -114,7 +114,7 @@ const run = () => {
 
   assert.strictEqual(
     volume.planStatus,
-    "NOT_IMPLEMENTED"
+    "RUNNABLE"
   );
 
   assert.strictEqual(
@@ -140,7 +140,7 @@ const run = () => {
 
   assert.strictEqual(
     plan.runnable.length,
-    3
+    10
   );
 
   assert.strictEqual(

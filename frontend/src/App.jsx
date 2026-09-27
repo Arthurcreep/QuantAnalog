@@ -1,53 +1,19 @@
-import {
-  Navigate,
-  Route,
-  Routes,
-} from "react-router-dom";
+import { Link, Route, Routes } from "react-router-dom";
+import DatasetQualityPage from "./pages/DatasetQualityPage.jsx";
+import ForecastResultPage from "./pages/ForecastResultPage.jsx";
+import ForecastsPage from "./pages/ForecastsPage.jsx";
 
-import DatasetQualityPage from
-  "./pages/DatasetQualityPage.jsx";
-
-import ForecastResultPage from
-  "./pages/ForecastResultPage.jsx";
-
-const DEFAULT_GARCH_RUN =
-  "75e0712d-ad69-4f10-8bc2-f82147db01a6";
-
-const DEFAULT_BASELINE_RUN =
-  "87272179-e508-45b4-b5a9-ebe45db777ff";
-
-const App =
-  () => {
-    return (
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <Navigate
-              replace
-              to={
-                `/forecasts/${DEFAULT_GARCH_RUN}` +
-                `?benchmarkForecastRunId=${DEFAULT_BASELINE_RUN}`
-              }
-            />
-          }
-        />
-
-        <Route
-          path="/forecasts/:id"
-          element={
-            <ForecastResultPage />
-          }
-        />
-
-        <Route
-          path="/datasets/:id"
-          element={
-            <DatasetQualityPage />
-          }
-        />
-      </Routes>
-    );
-  };
+const App = () => (
+  <>
+    <nav className="bg-zinc-950 px-6 py-3 text-sky-300"><Link to="/">QuantLog · Прогнозы</Link></nav>
+    <Routes>
+      <Route path="/" element={<ForecastsPage />} />
+      <Route path="/forecasts" element={<ForecastsPage />} />
+      <Route path="/forecasts/:id" element={<ForecastResultPage />} />
+      <Route path="/datasets/:id" element={<DatasetQualityPage />} />
+      <Route path="*" element={<div className="p-8">Страница не найдена. <Link to="/">К прогнозам</Link></div>} />
+    </Routes>
+  </>
+);
 
 export default App;

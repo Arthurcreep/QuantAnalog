@@ -215,6 +215,8 @@ const run = () => {
     ],
   };
 
+  hypothesis.analysisRuns[0].config = { protocol: { horizons: hypothesis.analysisRuns[0].metrics.horizons.map((item) => ({ label: item.horizon, bars: item.horizonBars })) } };
+
   const evidence =
     evaluateHypothesisEvidence({
       hypothesis,

@@ -79,7 +79,16 @@ const findForecastRunsBySeriesContext =
       ...options,
     });
 
+const findRecentForecastRuns = async () =>
+  ForecastRun.findAll({
+    attributes: ["id", "datasetId", "modelId", "modelVersion", "target", "modelTimeframe", "issuedAt"],
+    order: [["issuedAt", "DESC"], ["id", "DESC"]],
+    limit: 50,
+    raw: true,
+  });
+
 module.exports = {
+  findRecentForecastRuns,
   createForecastRun,
   findForecastRunById,
   findForecastRunByKey,

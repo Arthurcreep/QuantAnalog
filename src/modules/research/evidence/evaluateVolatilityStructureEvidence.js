@@ -18,9 +18,9 @@ const getRequiredSupportCount = ({
     rule ===
     "MAJORITY_OF_REGISTERED_TIMEFRAMES"
   ) {
-    return Math.ceil(
+    return Math.floor(
       total / 2
-    );
+    ) + 1;
   }
 
   throw new Error(

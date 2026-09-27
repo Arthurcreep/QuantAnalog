@@ -4,7 +4,7 @@ const EVIDENCE_POLICY_V1 =
       "EVIDENCE_POLICY",
 
     version:
-      "1.1.0",
+      "1.2.0",
 
     statistical: {
       alpha:

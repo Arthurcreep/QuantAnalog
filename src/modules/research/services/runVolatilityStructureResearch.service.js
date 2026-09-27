@@ -1,3 +1,6 @@
+const { validateSeriesContinuity } = require("../series/validateSeriesContinuity");
+const { timeframeToMilliseconds } = require("../../datasets/calculations/timeframeToMilliseconds");
+
 const crypto = require(
   "crypto"
 );
@@ -51,7 +54,7 @@ const {
 );
 
 const RESEARCH_ENGINE_VERSION =
-  "research-v1.1";
+  "research-v1.2";
 
 const hashObject = (
   value
@@ -111,7 +114,9 @@ const selectAcfLags = (
 const calculateDiagnostics = ({
   series,
   protocol,
+  expectedIntervalMs,
 }) => {
+  validateSeriesContinuity({ series, expectedIntervalMs });
   const values =
     series.map(
       (item) =>
@@ -308,6 +313,7 @@ const runVolatilityStructureResearch =
           series:
             development,
           protocol,
+          expectedIntervalMs: timeframeToMilliseconds(dataset.sourceTimeframe),
         }),
 
       retrospectiveValidation:
@@ -315,6 +321,7 @@ const runVolatilityStructureResearch =
           series:
             retrospectiveValidation,
           protocol,
+          expectedIntervalMs: timeframeToMilliseconds(dataset.sourceTimeframe),
         }),
 
       forwardOos: {

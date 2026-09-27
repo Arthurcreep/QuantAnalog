@@ -3,6 +3,7 @@ const express = require(
 );
 
 const {
+  listForecastRunsController,
   createForecast,
   getForecast,
   getForecastHistory,
@@ -14,6 +15,8 @@ const {
 
 const router =
   express.Router();
+
+router.get("/", listForecastRunsController);
 
 router.post(
   "/",
