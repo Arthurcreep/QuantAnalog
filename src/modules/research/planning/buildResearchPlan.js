@@ -27,6 +27,14 @@ const PLAN_STATUS = {
     "UNAVAILABLE",
 };
 
+const MULTIPLE_TESTING_FAMILY_SOURCE = {
+  EXPLICIT:
+    "EXPLICIT",
+
+  RESEARCH_FAMILY_FALLBACK:
+    "RESEARCH_FAMILY_FALLBACK",
+};
+
 const resolvePlanStatus = ({
   dataStatus,
   executionStatus,
@@ -75,6 +83,54 @@ const resolvePlanStatus = ({
     .NOT_IMPLEMENTED;
 };
 
+const isNonEmptyString = (
+  value
+) =>
+  typeof value ===
+    "string" &&
+  value.trim().length >
+    0;
+
+const resolveMultipleTestingFamily = (
+  hypothesis
+) => {
+  if (
+    isNonEmptyString(
+      hypothesis
+        .multipleTestingFamily
+    )
+  ) {
+    return {
+      id:
+        hypothesis
+          .multipleTestingFamily,
+
+      source:
+        MULTIPLE_TESTING_FAMILY_SOURCE
+          .EXPLICIT,
+    };
+  }
+
+  if (
+    isNonEmptyString(
+      hypothesis.family
+    )
+  ) {
+    return {
+      id:
+        hypothesis.family,
+
+      source:
+        MULTIPLE_TESTING_FAMILY_SOURCE
+          .RESEARCH_FAMILY_FALLBACK,
+    };
+  }
+
+  throw new Error(
+    `MULTIPLE_TESTING_FAMILY_NOT_DEFINED:${hypothesis.id}`
+  );
+};
+
 const buildResearchPlan = ({
   hypotheses,
   availableData = [],
@@ -105,6 +161,12 @@ const buildResearchPlan = ({
             dataAudit.hypothesisId
           );
 
+        if (!hypothesis) {
+          throw new Error(
+            `HYPOTHESIS_NOT_FOUND:${dataAudit.hypothesisId}`
+          );
+        }
+
         const execution =
           getHypothesisExecution(
             dataAudit.hypothesisId
@@ -122,12 +184,23 @@ const buildResearchPlan = ({
             executionStatus,
           });
 
+        const multipleTestingFamily =
+          resolveMultipleTestingFamily(
+            hypothesis
+          );
+
         return {
           hypothesisId:
             hypothesis.id,
 
           family:
             hypothesis.family,
+
+          multipleTestingFamily:
+            multipleTestingFamily.id,
+
+          multipleTestingFamilySource:
+            multipleTestingFamily.source,
 
           title:
             hypothesis.title,
@@ -150,7 +223,8 @@ const buildResearchPlan = ({
               .acquirableMissingData,
 
           unavailableData:
-            dataAudit.unavailableData,
+            dataAudit
+              .unavailableData,
 
           execution:
             execution
@@ -174,9 +248,11 @@ const buildResearchPlan = ({
                   status:
                     "UNREGISTERED",
 
-                  executor: null,
+                  executor:
+                    null,
 
-                  protocol: null,
+                  protocol:
+                    null,
 
                   reason:
                     "No execution registry entry",
@@ -191,32 +267,39 @@ const buildResearchPlan = ({
         accumulator,
         item
       ) => {
-        accumulator.total += 1;
+        accumulator.total +=
+          1;
 
         accumulator[
           item.planStatus
-        ] += 1;
+        ] +=
+          1;
 
         return accumulator;
       },
       {
-        total: 0,
+        total:
+          0,
 
-        RUNNABLE: 0,
+        RUNNABLE:
+          0,
 
-        NEED_ACQUISITION: 0,
+        NEED_ACQUISITION:
+          0,
 
-        NOT_IMPLEMENTED: 0,
+        NOT_IMPLEMENTED:
+          0,
 
         NEED_ACQUISITION_AND_IMPLEMENTATION:
           0,
 
-        UNAVAILABLE: 0,
+        UNAVAILABLE:
+          0,
       }
     );
 
   /*
-   * Это список всех данных,
+   * Список всех данных,
    * которых не хватает Research Universe,
    * независимо от того, реализован ли
    * конкретный executor прямо сейчас.
@@ -244,7 +327,8 @@ const buildResearchPlan = ({
       (item) =>
         item
           .acquirableMissingData
-          .length > 0
+          .length >
+        0
     );
 
   const implementationRequired =
@@ -271,5 +355,6 @@ const buildResearchPlan = ({
 
 module.exports = {
   PLAN_STATUS,
+  MULTIPLE_TESTING_FAMILY_SOURCE,
   buildResearchPlan,
 };

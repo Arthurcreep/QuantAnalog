@@ -1,10 +1,18 @@
-const fs = require("fs");
+const fs = require(
+  "fs"
+);
 
-const { parse } = require("csv-parse");
+const {
+  parse,
+} = require(
+  "csv-parse"
+);
 
 const {
   calculateLogReturn,
-} = require("../calculations/calculateLogReturn");
+} = require(
+  "../calculations/calculateLogReturn"
+);
 
 const {
   timeframeToMilliseconds,
@@ -24,6 +32,35 @@ const {
   "../../datasets/timeframes/applyIncompleteBucketPolicy"
 );
 
+const parseVolume = (
+  value
+) => {
+  if (
+    value === undefined ||
+    value === null ||
+    String(value).trim() ===
+      ""
+  ) {
+    return null;
+  }
+
+  const volume =
+    Number(value);
+
+  if (
+    !Number.isFinite(
+      volume
+    ) ||
+    volume < 0
+  ) {
+    throw new Error(
+      "INVALID_VOLUME_SOURCE_ROW"
+    );
+  }
+
+  return volume;
+};
+
 const buildLogReturnSeries = async ({
   filePath,
   timeframe,
@@ -41,12 +78,19 @@ const buildLogReturnSeries = async ({
   }
 
   const parser = fs
-    .createReadStream(filePath)
+    .createReadStream(
+      filePath
+    )
     .pipe(
       parse({
-        columns: true,
-        trim: true,
-        skip_empty_lines: true,
+        columns:
+          true,
+
+        trim:
+          true,
+
+        skip_empty_lines:
+          true,
       })
     );
 
@@ -58,28 +102,39 @@ const buildLogReturnSeries = async ({
   let inputRowCount = 0;
   let usedRowCount = 0;
 
-  let skippedIncompleteCount = 0;
-  let skippedGapReturnCount = 0;
+  let skippedIncompleteCount =
+    0;
 
-  for await (const row of parser) {
-    inputRowCount += 1;
+  let skippedGapReturnCount =
+    0;
+
+  for await (
+    const row of parser
+  ) {
+    inputRowCount +=
+      1;
 
     const isComplete =
-      String(row.is_complete)
-        .toLowerCase() === "true";
+      String(
+        row.is_complete
+      ).toLowerCase() ===
+      "true";
 
     if (
       incompletePolicy ===
         INCOMPLETE_BUCKET_POLICIES.DROP &&
       !isComplete
     ) {
-      skippedIncompleteCount += 1;
+      skippedIncompleteCount +=
+        1;
 
       if (previous) {
-        brokenSequence = true;
+        brokenSequence =
+          true;
       }
 
       previous = null;
+
       continue;
     }
 
@@ -89,11 +144,20 @@ const buildLogReturnSeries = async ({
       );
 
     const close =
-      Number(row.close);
+      Number(
+        row.close
+      );
+
+    const volume =
+      parseVolume(
+        row.volume
+      );
 
     if (
       timestamp === null ||
-      !Number.isFinite(close) ||
+      !Number.isFinite(
+        close
+      ) ||
       close <= 0
     ) {
       throw new Error(
@@ -101,12 +165,18 @@ const buildLogReturnSeries = async ({
       );
     }
 
-    usedRowCount += 1;
+    usedRowCount +=
+      1;
 
     if (!previous) {
-      if (brokenSequence) {
-        skippedGapReturnCount += 1;
-        brokenSequence = false;
+      if (
+        brokenSequence
+      ) {
+        skippedGapReturnCount +=
+          1;
+
+        brokenSequence =
+          false;
       }
 
       previous = {
@@ -122,9 +192,11 @@ const buildLogReturnSeries = async ({
       previous.timestamp;
 
     if (
-      delta !== timeframeMs
+      delta !==
+      timeframeMs
     ) {
-      skippedGapReturnCount += 1;
+      skippedGapReturnCount +=
+        1;
 
       previous = {
         timestamp,
@@ -141,6 +213,8 @@ const buildLogReturnSeries = async ({
         ).toISOString(),
 
       close,
+
+      volume,
 
       logReturn:
         calculateLogReturn(
@@ -159,15 +233,18 @@ const buildLogReturnSeries = async ({
 
   return {
     timeframe,
+
     incompletePolicy,
 
     inputRowCount,
+
     usedRowCount,
 
     returnCount:
       series.length,
 
     skippedIncompleteCount,
+
     skippedGapReturnCount,
 
     series,

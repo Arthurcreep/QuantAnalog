@@ -5,6 +5,12 @@ const {
 );
 
 const {
+  evaluateContinuousFactorEvidence,
+} = require(
+  "./evaluateContinuousFactorEvidence"
+);
+
+const {
   evaluateVolatilityStructureEvidence,
 } = require(
   "./evaluateVolatilityStructureEvidence"
@@ -44,6 +50,15 @@ const evaluateHypothesisEvidence =
       "CATEGORICAL_FACTOR_RESEARCH"
     ) {
       return evaluateCategoricalFactorEvidence({
+        hypothesis,
+      });
+    }
+
+    if (
+      hypothesis.executor ===
+      "CONTINUOUS_FACTOR_RESEARCH"
+    ) {
+      return evaluateContinuousFactorEvidence({
         hypothesis,
       });
     }

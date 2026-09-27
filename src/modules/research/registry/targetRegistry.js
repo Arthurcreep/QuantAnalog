@@ -1,9 +1,16 @@
 const TARGETS = [
   {
-    id: "FUTURE_LOG_RETURN",
-    family: "RETURN",
-    version: "1.0.0",
-    status: "PLANNED",
+    id:
+      "FUTURE_LOG_RETURN",
+
+    family:
+      "RETURN",
+
+    version:
+      "1.0.0",
+
+    status:
+      "IMPLEMENTED",
 
     parameters: [
       "horizon",
@@ -14,10 +21,17 @@ const TARGETS = [
   },
 
   {
-    id: "FUTURE_REALIZED_VOLATILITY",
-    family: "VOLATILITY",
-    version: "1.0.0",
-    status: "IMPLEMENTED",
+    id:
+      "FUTURE_REALIZED_VOLATILITY",
+
+    family:
+      "VOLATILITY",
+
+    version:
+      "1.0.0",
+
+    status:
+      "IMPLEMENTED",
 
     parameters: [
       "horizon",
@@ -28,10 +42,17 @@ const TARGETS = [
   },
 
   {
-    id: "FUTURE_RANGE",
-    family: "RANGE",
-    version: "1.0.0",
-    status: "PLANNED",
+    id:
+      "FUTURE_RANGE",
+
+    family:
+      "RANGE",
+
+    version:
+      "1.0.0",
+
+    status:
+      "PLANNED",
 
     parameters: [
       "horizon",
@@ -42,10 +63,17 @@ const TARGETS = [
   },
 
   {
-    id: "FUTURE_MAX_DRAWDOWN",
-    family: "RISK",
-    version: "1.0.0",
-    status: "PLANNED",
+    id:
+      "FUTURE_MAX_DRAWDOWN",
+
+    family:
+      "RISK",
+
+    version:
+      "1.0.0",
+
+    status:
+      "PLANNED",
 
     parameters: [
       "horizon",

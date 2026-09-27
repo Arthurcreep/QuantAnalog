@@ -11,6 +11,12 @@ const {
 );
 
 const {
+  runContinuousFactorResearch,
+} = require(
+  "../services/runContinuousFactorResearch.service"
+);
+
+const {
   getResearchProtocol,
 } = require(
   "../registry/researchProtocolRegistry"
@@ -72,35 +78,91 @@ const executeVolatilityStructure =
     return runs;
   };
 
+const getSingleDataset = ({
+  binding,
+  executor,
+}) => {
+  if (
+    binding.datasets.length !==
+    1
+  ) {
+    throw new Error(
+      `${executor}_REQUIRES_SINGLE_DATASET`
+    );
+  }
+
+  return binding.datasets[0];
+};
+
+const getBindingProtocol = (
+  binding
+) => {
+  const protocol =
+    getResearchProtocol(
+      binding.protocol
+    );
+
+  if (!protocol) {
+    throw new Error(
+      `RESEARCH_PROTOCOL_NOT_FOUND:${binding.protocol}`
+    );
+  }
+
+  return protocol;
+};
+
 const executeCategoricalFactor =
   async ({
     binding,
   }) => {
-    if (
-      binding.datasets.length !==
-      1
-    ) {
-      throw new Error(
-        "CATEGORICAL_FACTOR_REQUIRES_SINGLE_DATASET"
-      );
-    }
+    const dataset =
+      getSingleDataset({
+        binding,
+
+        executor:
+          "CATEGORICAL_FACTOR",
+      });
 
     const protocol =
-      getResearchProtocol(
-        binding.protocol
+      getBindingProtocol(
+        binding
       );
-
-    if (!protocol) {
-      throw new Error(
-        `RESEARCH_PROTOCOL_NOT_FOUND:${binding.protocol}`
-      );
-    }
-
-    const dataset =
-      binding.datasets[0];
 
     const result =
       await runCategoricalFactorResearch({
+        datasetId:
+          dataset.id,
+
+        protocol,
+      });
+
+    return [
+      compactRunResult({
+        result,
+        dataset,
+      }),
+    ];
+  };
+
+const executeContinuousFactor =
+  async ({
+    binding,
+  }) => {
+    const dataset =
+      getSingleDataset({
+        binding,
+
+        executor:
+          "CONTINUOUS_FACTOR",
+      });
+
+    const protocol =
+      getBindingProtocol(
+        binding
+      );
+
+    const result =
+      await runContinuousFactorResearch({
         datasetId:
           dataset.id,
 
@@ -145,6 +207,14 @@ const executeResearchBinding =
     ) {
       runs =
         await executeCategoricalFactor({
+          binding,
+        });
+    } else if (
+      binding.executor ===
+      "CONTINUOUS_FACTOR_RESEARCH"
+    ) {
+      runs =
+        await executeContinuousFactor({
           binding,
         });
     } else {

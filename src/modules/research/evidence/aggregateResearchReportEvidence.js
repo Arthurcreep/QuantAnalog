@@ -4,6 +4,12 @@ const {
   "./evaluateHypothesisEvidence"
 );
 
+const {
+  attachResearchFamilyMultipleTesting,
+} = require(
+  "../multipleTesting/attachResearchFamilyMultipleTesting"
+);
+
 const aggregateResearchReportEvidence =
   ({
     report,
@@ -19,17 +25,24 @@ const aggregateResearchReportEvidence =
       );
     }
 
-    const hypotheses =
-      report.hypotheses.map(
-        (hypothesis) => ({
-          ...hypothesis,
+    const adjustedReport =
+      attachResearchFamilyMultipleTesting({
+        report,
+      });
 
-          evidence:
-            evaluateHypothesisEvidence({
-              hypothesis,
-            }),
-        })
-      );
+    const hypotheses =
+      adjustedReport
+        .hypotheses
+        .map(
+          (hypothesis) => ({
+            ...hypothesis,
+
+            evidence:
+              evaluateHypothesisEvidence({
+                hypothesis,
+              }),
+          })
+        );
 
     const evaluated =
       hypotheses.filter(
@@ -85,7 +98,7 @@ const aggregateResearchReportEvidence =
     }
 
     return {
-      ...report,
+      ...adjustedReport,
 
       hypotheses,
 

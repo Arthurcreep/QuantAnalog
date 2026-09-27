@@ -22,6 +22,42 @@ const {
   "../protocols/calendarWeekendFutureRvV1"
 );
 
+const {
+  CALENDAR_MONTH_FUTURE_RV_V1,
+} = require(
+  "../protocols/calendarMonthFutureRvV1"
+);
+
+const {
+  LAGGED_RETURN_FUTURE_RETURN_V1,
+} = require(
+  "../protocols/laggedReturnFutureReturnV1"
+);
+
+const {
+  CURRENT_RV_FUTURE_RV_V1,
+} = require(
+  "../protocols/currentRvFutureRvV1"
+);
+
+const {
+  ABSOLUTE_RETURN_FUTURE_RV_V1,
+} = require(
+  "../protocols/absoluteReturnFutureRvV1"
+);
+
+const {
+  VOLUME_ZSCORE_FUTURE_RV_V1,
+} = require(
+  "../protocols/volumeZScoreFutureRvV1"
+);
+
+const {
+  VOLUME_ZSCORE_FUTURE_RETURN_V1,
+} = require(
+  "../protocols/volumeZScoreFutureReturnV1"
+);
+
 const cloneProtocol = (
   protocol
 ) =>
@@ -52,6 +88,42 @@ const RESEARCH_PROTOCOL_REGISTRY = {
     () =>
       cloneProtocol(
         CALENDAR_WEEKEND_FUTURE_RV_V1
+      ),
+
+  CALENDAR_MONTH_FUTURE_RV_V1:
+    () =>
+      cloneProtocol(
+        CALENDAR_MONTH_FUTURE_RV_V1
+      ),
+
+  LAGGED_RETURN_FUTURE_RETURN_V1:
+    () =>
+      cloneProtocol(
+        LAGGED_RETURN_FUTURE_RETURN_V1
+      ),
+
+  CURRENT_RV_FUTURE_RV_V1:
+    () =>
+      cloneProtocol(
+        CURRENT_RV_FUTURE_RV_V1
+      ),
+
+  ABSOLUTE_RETURN_FUTURE_RV_V1:
+    () =>
+      cloneProtocol(
+        ABSOLUTE_RETURN_FUTURE_RV_V1
+      ),
+
+  VOLUME_ZSCORE_FUTURE_RV_V1:
+    () =>
+      cloneProtocol(
+        VOLUME_ZSCORE_FUTURE_RV_V1
+      ),
+
+  VOLUME_ZSCORE_FUTURE_RETURN_V1:
+    () =>
+      cloneProtocol(
+        VOLUME_ZSCORE_FUTURE_RETURN_V1
       ),
 };
 

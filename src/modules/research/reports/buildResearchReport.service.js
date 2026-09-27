@@ -20,11 +20,17 @@ const {
   "../evidence/policies/evidencePolicyV1"
 );
 
+const {
+  attachEconomicEligibility,
+} = require(
+  "../../economics/reports/attachEconomicEligibility"
+);
+
 const REPORT_ENGINE_VERSION =
-  "research-report-v1.2";
+  "research-report-v1.5";
 
 const EVIDENCE_ENGINE_VERSION =
-  "evidence-v1";
+  "evidence-v1.2";
 
 const hashObject = (
   value
@@ -56,20 +62,21 @@ const buildResearchReport =
         researchBatchId,
       });
 
-    const report =
+    const evidenceReport =
       aggregateResearchReportEvidence({
         report:
           baseReport,
       });
 
-    return {
-      ...report,
+    const reportWithMetadata = {
+      ...evidenceReport,
 
       reportEngineVersion:
         REPORT_ENGINE_VERSION,
 
       evidence: {
-        ...report.evidence,
+        ...evidenceReport
+          .evidence,
 
         engineVersion:
           EVIDENCE_ENGINE_VERSION,
@@ -88,6 +95,11 @@ const buildResearchReport =
         },
       },
     };
+
+    return attachEconomicEligibility({
+      report:
+        reportWithMetadata,
+    });
   };
 
 module.exports = {

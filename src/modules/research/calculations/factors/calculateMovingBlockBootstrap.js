@@ -38,14 +38,30 @@ const getInterval = (
       ]
     );
 
+  if (!quantiles) {
+    throw new Error(
+      "INVALID_BOOTSTRAP_INTERVAL_SAMPLE"
+    );
+  }
+
   const get = (
     probability
-  ) =>
-    quantiles.find(
-      (item) =>
-        item.probability ===
-        probability
-    ).value;
+  ) => {
+    const quantile =
+      quantiles.find(
+        (item) =>
+          item.probability ===
+          probability
+      );
+
+    if (!quantile) {
+      throw new Error(
+        "BOOTSTRAP_QUANTILE_NOT_FOUND"
+      );
+    }
+
+    return quantile.value;
+  };
 
   return {
     lower:
@@ -58,6 +74,17 @@ const getInterval = (
       get(0.975),
   };
 };
+
+const validateCategory = ({
+  category,
+  categoryCount,
+}) =>
+  Number.isInteger(
+    category
+  ) &&
+  category >= 0 &&
+  category <
+    categoryCount;
 
 const calculateObserved = ({
   rows,
@@ -94,6 +121,20 @@ const calculateObserved = ({
         ]
       );
 
+    if (
+      !validateCategory({
+        category,
+        categoryCount,
+      }) ||
+      !Number.isFinite(
+        target
+      )
+    ) {
+      throw new Error(
+        "INVALID_BOOTSTRAP_ROW"
+      );
+    }
+
     sums[category] +=
       target;
 
@@ -104,10 +145,29 @@ const calculateObserved = ({
       target;
   }
 
+  for (
+    let category = 0;
+    category <
+    categoryCount;
+    category += 1
+  ) {
+    if (
+      counts[category] ===
+      0
+    ) {
+      throw new Error(
+        `EMPTY_BOOTSTRAP_CATEGORY: ${category}`
+      );
+    }
+  }
+
   return {
     means:
       sums.map(
-        (sum, category) =>
+        (
+          sum,
+          category
+        ) =>
           sum /
           counts[
             category
@@ -119,6 +179,14 @@ const calculateObserved = ({
       rows.length,
   };
 };
+
+const hasAllCategories = ({
+  counts,
+}) =>
+  counts.every(
+    (count) =>
+      count > 0
+  );
 
 const calculateMovingBlockBootstrap =
   ({
@@ -139,6 +207,66 @@ const calculateMovingBlockBootstrap =
     ) {
       throw new Error(
         "INSUFFICIENT_BOOTSTRAP_SAMPLE"
+      );
+    }
+
+    if (
+      !Number.isInteger(
+        categoryCount
+      ) ||
+      categoryCount < 2
+    ) {
+      throw new Error(
+        "INVALID_BOOTSTRAP_CATEGORY_COUNT"
+      );
+    }
+
+    if (
+      !Number.isInteger(
+        blockSize
+      ) ||
+      blockSize <= 0
+    ) {
+      throw new Error(
+        "INVALID_BOOTSTRAP_BLOCK_SIZE"
+      );
+    }
+
+    if (
+      !Number.isInteger(
+        iterations
+      ) ||
+      iterations <= 0
+    ) {
+      throw new Error(
+        "INVALID_BOOTSTRAP_ITERATIONS"
+      );
+    }
+
+    if (
+      !Number.isInteger(
+        highCategory
+      ) ||
+      !Number.isInteger(
+        lowCategory
+      ) ||
+      !validateCategory({
+        category:
+          highCategory,
+
+        categoryCount,
+      }) ||
+      !validateCategory({
+        category:
+          lowCategory,
+
+        categoryCount,
+      }) ||
+      highCategory ===
+        lowCategory
+    ) {
+      throw new Error(
+        "INVALID_BOOTSTRAP_CONTRAST"
       );
     }
 
@@ -177,12 +305,27 @@ const calculateMovingBlockBootstrap =
       rows.length -
       blockSize;
 
-    for (
-      let iteration = 0;
-      iteration <
-      iterations;
-      iteration += 1
+    const maxAttempts =
+      iterations * 20;
+
+    let validIterations =
+      0;
+
+    let attempts =
+      0;
+
+    let rejectedIterations =
+      0;
+
+    while (
+      validIterations <
+        iterations &&
+      attempts <
+        maxAttempts
     ) {
+      attempts +=
+        1;
+
       const sums =
         Array(
           categoryCount
@@ -241,6 +384,20 @@ const calculateMovingBlockBootstrap =
               ]
             );
 
+          if (
+            !validateCategory({
+              category,
+              categoryCount,
+            }) ||
+            !Number.isFinite(
+              target
+            )
+          ) {
+            throw new Error(
+              "INVALID_BOOTSTRAP_ROW"
+            );
+          }
+
           sums[category] +=
             target;
 
@@ -253,6 +410,17 @@ const calculateMovingBlockBootstrap =
 
         sampled +=
           take;
+      }
+
+      if (
+        !hasAllCategories({
+          counts,
+        })
+      ) {
+        rejectedIterations +=
+          1;
+
+        continue;
       }
 
       const means =
@@ -270,6 +438,18 @@ const calculateMovingBlockBootstrap =
       const overallMean =
         totalSum /
         rows.length;
+
+      if (
+        !Number.isFinite(
+          overallMean
+        ) ||
+        overallMean === 0
+      ) {
+        rejectedIterations +=
+          1;
+
+        continue;
+      }
 
       for (
         let category = 0;
@@ -294,14 +474,9 @@ const calculateMovingBlockBootstrap =
           lowCategory
         ];
 
-      differenceSamples.push(
-        difference
-      );
-
-      relativeDifferenceSamples.push(
+      const relativeDifference =
         difference /
-        overallMean
-      );
+        overallMean;
 
       const minimum =
         Math.min(
@@ -313,12 +488,51 @@ const calculateMovingBlockBootstrap =
           ...means
         );
 
-      spanSamples.push(
+      const span =
         (
           maximum -
           minimum
         ) /
-        overallMean
+        overallMean;
+
+      if (
+        !Number.isFinite(
+          difference
+        ) ||
+        !Number.isFinite(
+          relativeDifference
+        ) ||
+        !Number.isFinite(
+          span
+        )
+      ) {
+        throw new Error(
+          "NON_FINITE_BOOTSTRAP_RESULT"
+        );
+      }
+
+      differenceSamples.push(
+        difference
+      );
+
+      relativeDifferenceSamples.push(
+        relativeDifference
+      );
+
+      spanSamples.push(
+        span
+      );
+
+      validIterations +=
+        1;
+    }
+
+    if (
+      validIterations <
+      iterations
+    ) {
+      throw new Error(
+        `INSUFFICIENT_VALID_BOOTSTRAP_ITERATIONS: ${validIterations}/${iterations}`
       );
     }
 
@@ -327,6 +541,10 @@ const calculateMovingBlockBootstrap =
         blockSize,
         iterations,
         seed,
+
+        attempts,
+
+        rejectedIterations,
       },
 
       observed: {

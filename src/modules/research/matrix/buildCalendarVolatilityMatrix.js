@@ -80,6 +80,10 @@ const buildCalendarVolatilityMatrix = ({
         calendar
           .calendarMonthUtc,
 
+      calendarMonthIndexUtc:
+        calendar
+          .calendarMonthIndexUtc,
+
       horizonBars:
         target.horizonBars,
 

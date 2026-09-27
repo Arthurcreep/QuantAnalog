@@ -33,8 +33,11 @@ const buildCalendarFeatures = ({
   const weekday =
     time.getUTCDay();
 
+  const monthIndex =
+    time.getUTCMonth();
+
   const month =
-    time.getUTCMonth() + 1;
+    monthIndex + 1;
 
   const isWeekend =
     weekday === 0 ||
@@ -60,6 +63,9 @@ const buildCalendarFeatures = ({
 
     calendarMonthUtc:
       month,
+
+    calendarMonthIndexUtc:
+      monthIndex,
   };
 };
 

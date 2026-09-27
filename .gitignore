@@ -7,3 +7,14 @@ coverage/
 storage/raw/
 storage/temp*/
 storage/prepared/
+/storage/
+/node_modules/
+.env
+.env.*
+!.env.example
+
+/storage/
+/node_modules/
+.env
+.env.*
+!.env.example

@@ -121,10 +121,27 @@ const HYPOTHESIS_EXECUTION_REGISTRY = [
       "H_CAL_004",
 
     status:
-      "PLANNED",
+      "IMPLEMENTED",
 
-    reason:
-      "Month protocol has not been registered yet",
+    executor:
+      "CATEGORICAL_FACTOR_RESEARCH",
+
+    protocol:
+      "CALENDAR_MONTH_FUTURE_RV_V1",
+
+    datasetBinding: {
+      capability:
+        "CANDLES",
+
+      stage:
+        "PREPARED",
+
+      cardinality:
+        "SINGLE",
+
+      timeframe:
+        "1h",
+    },
   },
 
   {
@@ -132,10 +149,27 @@ const HYPOTHESIS_EXECUTION_REGISTRY = [
       "H_RET_001",
 
     status:
-      "PLANNED",
+      "IMPLEMENTED",
 
-    reason:
-      "Future log-return target and continuous evaluator are not implemented yet",
+    executor:
+      "CONTINUOUS_FACTOR_RESEARCH",
+
+    protocol:
+      "LAGGED_RETURN_FUTURE_RETURN_V1",
+
+    datasetBinding: {
+      capability:
+        "CANDLES",
+
+      stage:
+        "PREPARED",
+
+      cardinality:
+        "SINGLE",
+
+      timeframe:
+        "1h",
+    },
   },
 
   {
@@ -143,10 +177,27 @@ const HYPOTHESIS_EXECUTION_REGISTRY = [
       "H_VOL_002",
 
     status:
-      "PLANNED",
+      "IMPLEMENTED",
 
-    reason:
-      "Continuous volatility factor evaluator is not implemented yet",
+    executor:
+      "CONTINUOUS_FACTOR_RESEARCH",
+
+    protocol:
+      "CURRENT_RV_FUTURE_RV_V1",
+
+    datasetBinding: {
+      capability:
+        "CANDLES",
+
+      stage:
+        "PREPARED",
+
+      cardinality:
+        "SINGLE",
+
+      timeframe:
+        "1h",
+    },
   },
 
   {
@@ -154,10 +205,27 @@ const HYPOTHESIS_EXECUTION_REGISTRY = [
       "H_VOL_003",
 
     status:
-      "PLANNED",
+      "IMPLEMENTED",
 
-    reason:
-      "Continuous absolute-return factor evaluator is not implemented yet",
+    executor:
+      "CONTINUOUS_FACTOR_RESEARCH",
+
+    protocol:
+      "ABSOLUTE_RETURN_FUTURE_RV_V1",
+
+    datasetBinding: {
+      capability:
+        "CANDLES",
+
+      stage:
+        "PREPARED",
+
+      cardinality:
+        "SINGLE",
+
+      timeframe:
+        "1h",
+    },
   },
 
   {
@@ -165,10 +233,27 @@ const HYPOTHESIS_EXECUTION_REGISTRY = [
       "H_VOLM_001",
 
     status:
-      "PLANNED",
+      "IMPLEMENTED",
 
-    reason:
-      "Volume Z-score feature is not implemented yet",
+    executor:
+      "CONTINUOUS_FACTOR_RESEARCH",
+
+    protocol:
+      "VOLUME_ZSCORE_FUTURE_RV_V1",
+
+    datasetBinding: {
+      capability:
+        "CANDLES",
+
+      stage:
+        "PREPARED",
+
+      cardinality:
+        "SINGLE",
+
+      timeframe:
+        "1h",
+    },
   },
 
   {
@@ -176,10 +261,27 @@ const HYPOTHESIS_EXECUTION_REGISTRY = [
       "H_VOLM_002",
 
     status:
-      "PLANNED",
+      "IMPLEMENTED",
 
-    reason:
-      "Volume Z-score and future-return target are not implemented yet",
+    executor:
+      "CONTINUOUS_FACTOR_RESEARCH",
+
+    protocol:
+      "VOLUME_ZSCORE_FUTURE_RETURN_V1",
+
+    datasetBinding: {
+      capability:
+        "CANDLES",
+
+      stage:
+        "PREPARED",
+
+      cardinality:
+        "SINGLE",
+
+      timeframe:
+        "1h",
+    },
   },
 
   {

@@ -80,15 +80,37 @@ const evaluateHorizon = (
       ?.hac
       ?.pValue;
 
-  const developmentAdjustedPValue =
+  const developmentWithinAdjustedPValue =
     item
       .multipleTesting
       ?.developmentAdjustedPValue;
 
-  const validationAdjustedPValue =
+  const validationWithinAdjustedPValue =
     item
       .multipleTesting
       ?.validationAdjustedPValue;
+
+  const developmentFamilyAdjustedPValue =
+    item
+      .familyMultipleTesting
+      ?.developmentAdjustedPValue;
+
+  const validationFamilyAdjustedPValue =
+    item
+      .familyMultipleTesting
+      ?.validationAdjustedPValue;
+
+  const developmentAdjustedPValue =
+    policy
+      .requireResearchFamilyAdjustment
+      ? developmentFamilyAdjustedPValue
+      : developmentWithinAdjustedPValue;
+
+  const validationAdjustedPValue =
+    policy
+      .requireResearchFamilyAdjustment
+      ? validationFamilyAdjustedPValue
+      : validationWithinAdjustedPValue;
 
   const profileCorrelation =
     item
@@ -113,6 +135,16 @@ const evaluateHorizon = (
       developmentPValue
     );
 
+  const developmentWithinAdjusted =
+    isSignificant(
+      developmentWithinAdjustedPValue
+    );
+
+  const developmentFamilyAdjusted =
+    isSignificant(
+      developmentFamilyAdjustedPValue
+    );
+
   const developmentAdjusted =
     isSignificant(
       developmentAdjustedPValue
@@ -121,6 +153,16 @@ const evaluateHorizon = (
   const validationSignificant =
     isSignificant(
       validationPValue
+    );
+
+  const validationWithinAdjusted =
+    isSignificant(
+      validationWithinAdjustedPValue
+    );
+
+  const validationFamilyAdjusted =
+    isSignificant(
+      validationFamilyAdjustedPValue
     );
 
   const validationAdjusted =
@@ -190,11 +232,25 @@ const evaluateHorizon = (
     horizonBars:
       item.horizonBars,
 
+    familyId:
+      item
+        .familyMultipleTesting
+        ?.familyId ??
+      null,
+
     developmentPValue,
+
+    developmentWithinAdjustedPValue,
+
+    developmentFamilyAdjustedPValue,
 
     developmentAdjustedPValue,
 
     validationPValue,
+
+    validationWithinAdjustedPValue,
+
+    validationFamilyAdjustedPValue,
 
     validationAdjustedPValue,
 
@@ -215,9 +271,17 @@ const evaluateHorizon = (
 
     developmentSignificant,
 
+    developmentWithinAdjusted,
+
+    developmentFamilyAdjusted,
+
     developmentAdjusted,
 
     validationSignificant,
+
+    validationWithinAdjusted,
+
+    validationFamilyAdjusted,
 
     validationAdjusted,
 
@@ -296,6 +360,20 @@ const evaluateCategoricalFactorEvidence =
         (item) =>
           item
             .developmentGate
+      ).length;
+
+    const withinAdjustedCount =
+      horizonEvidence.filter(
+        (item) =>
+          item
+            .developmentWithinAdjusted
+      ).length;
+
+    const familyAdjustedCount =
+      horizonEvidence.filter(
+        (item) =>
+          item
+            .developmentFamilyAdjusted
       ).length;
 
     const adjustedCount =
@@ -394,6 +472,10 @@ const evaluateCategoricalFactorEvidence =
           policy
             .supportRule,
 
+        requireResearchFamilyAdjustment:
+          policy
+            .requireResearchFamilyAdjustment,
+
         totalHorizons:
           horizonEvidence.length,
 
@@ -402,6 +484,12 @@ const evaluateCategoricalFactorEvidence =
 
         developmentSignificantHorizons:
           developmentSignificantCount,
+
+        withinHypothesisAdjustedHorizons:
+          withinAdjustedCount,
+
+        familyAdjustedHorizons:
+          familyAdjustedCount,
 
         multipleTestingAdjustedHorizons:
           adjustedCount,
@@ -442,6 +530,8 @@ const evaluateCategoricalFactorEvidence =
 
       notes: [
         "OOS level refers to retrospective holdout validation, not prospective forward validation.",
+        "Within-hypothesis BH and research-family BH are reported separately.",
+        "Evidence Level 3+ uses research-family adjusted p-values.",
         "Forward OOS remains separate from the current Evidence Ladder result.",
         "Economic significance has not been evaluated for this diagnostic hypothesis.",
       ],

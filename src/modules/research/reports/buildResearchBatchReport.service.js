@@ -244,6 +244,59 @@ const buildExecutionMap = (
     )
   );
 
+const isNonEmptyString = (
+  value
+) =>
+  typeof value ===
+    "string" &&
+  value.trim().length >
+    0;
+
+const resolveSnapshotMultipleTestingFamily =
+  (
+    planItem
+  ) => {
+    if (
+      isNonEmptyString(
+        planItem
+          .multipleTestingFamily
+      )
+    ) {
+      return {
+        id:
+          planItem
+            .multipleTestingFamily,
+
+        source:
+          planItem
+            .multipleTestingFamilySource ||
+          "SNAPSHOT_EXPLICIT",
+      };
+    }
+
+    if (
+      isNonEmptyString(
+        planItem.family
+      )
+    ) {
+      return {
+        id:
+          planItem.family,
+
+        source:
+          "SNAPSHOT_RESEARCH_FAMILY_FALLBACK",
+      };
+    }
+
+    return {
+      id:
+        null,
+
+      source:
+        "UNAVAILABLE",
+    };
+  };
+
 const buildHypothesisReport = ({
   planItem,
   execution,
@@ -257,6 +310,11 @@ const buildHypothesisReport = ({
     execution?.error ||
     null;
 
+  const multipleTestingFamily =
+    resolveSnapshotMultipleTestingFamily(
+      planItem
+    );
+
   return {
     hypothesisId:
       planItem.hypothesisId,
@@ -266,6 +324,12 @@ const buildHypothesisReport = ({
 
     family:
       planItem.family,
+
+    multipleTestingFamily:
+      multipleTestingFamily.id,
+
+    multipleTestingFamilySource:
+      multipleTestingFamily.source,
 
     hypothesisStatus:
       planItem.hypothesisStatus,

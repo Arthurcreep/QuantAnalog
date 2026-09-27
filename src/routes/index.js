@@ -1,9 +1,36 @@
-const express = require("express");
+const express = require(
+  "express"
+);
 
-const healthRoutes = require("../modules/health/health.routes");
+const healthRoutes = require(
+  "../modules/health/health.routes"
+);
 
-const router = express.Router();
+const forecastRoutes = require(
+  "../modules/forecasting/forecast.routes"
+);
 
-router.use("/health", healthRoutes);
+const datasetRoutes = require(
+  "../modules/datasets/dataset.routes"
+);
 
-module.exports = router;
+const router =
+  express.Router();
+
+router.use(
+  "/health",
+  healthRoutes
+);
+
+router.use(
+  "/api/v1/forecasts",
+  forecastRoutes
+);
+
+router.use(
+  "/api/v1/datasets",
+  datasetRoutes
+);
+
+module.exports =
+  router;

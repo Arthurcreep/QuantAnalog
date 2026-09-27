@@ -4,7 +4,7 @@ const EVIDENCE_POLICY_V1 =
       "EVIDENCE_POLICY",
 
     version:
-      "1.0.0",
+      "1.1.0",
 
     statistical: {
       alpha:
@@ -24,6 +24,9 @@ const EVIDENCE_POLICY_V1 =
       requireMultipleTestingAdjustment:
         true,
 
+      requireResearchFamilyAdjustment:
+        true,
+
       requireRetrospectiveValidation:
         true,
 
@@ -32,6 +35,44 @@ const EVIDENCE_POLICY_V1 =
 
       requireBootstrapSupport:
         true,
+
+      forwardValidationRequiredForLevel7:
+        true,
+    },
+
+    continuousFactor: {
+      supportRule:
+        "MAJORITY_OF_REGISTERED_HORIZONS",
+
+      requireDevelopmentSignificance:
+        true,
+
+      requireMultipleTestingAdjustment:
+        true,
+
+      requireResearchFamilyAdjustment:
+        true,
+
+      requireRetrospectiveValidation:
+        true,
+
+      requireDirectionStabilityForOos:
+        true,
+
+      requirePreRegisteredRobustnessForLevel5:
+        true,
+
+      requireBootstrapSupportForLevel5:
+        true,
+
+      requireYearlyDirectionStabilityForLevel5:
+        true,
+
+      maximumEvidenceLevel:
+        5,
+
+      maximumEvidenceLevelReason:
+        "ECONOMIC_SIGNIFICANCE_NOT_IMPLEMENTED_FOR_CONTINUOUS_FACTORS",
 
       forwardValidationRequiredForLevel7:
         true,
